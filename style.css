@@ -1,5 +1,5 @@
 /*==================================
-        AURES BATNA DZ
+        HAPPY KIDS DZ
 ===================================*/
 
 *{
@@ -14,13 +14,9 @@ html{
 }
 
 body{
-
-    background:#F7F2EB;
-
-    color:#4E382C;
-
+    background:#FFF8F0;
+    color:#4A3728;
     line-height:1.8;
-
 }
 
 /*==================================
@@ -28,23 +24,15 @@ body{
 ===================================*/
 
 .hero{
-
     width:100%;
-
-    background:#EFE4D6;
-
+    background:linear-gradient(135deg, #FF6B6B, #FF8E53);
     overflow:hidden;
-
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-
+    box-shadow:0 5px 20px rgba(255,107,107,0.25);
 }
 
 .hero-image{
-
     width:100%;
-
     display:block;
-
 }
 
 /*==================================
@@ -52,39 +40,26 @@ body{
 ===================================*/
 
 .container{
-
     width:95%;
-
     max-width:1200px;
-
     margin:35px auto;
-
 }
 
 .site-title{
-
     text-align:center;
-
     font-size:42px;
-
-    color:#7A522A;
-
+    color:#FF6B6B;
     font-weight:800;
-
     margin-bottom:8px;
-
+    text-shadow:2px 2px 0 rgba(255,107,107,0.15);
 }
 
 .site-desc{
-
     text-align:center;
-
-    color:#7B6857;
-
+    color:#F08A5D;
     font-size:19px;
-
     margin-bottom:35px;
-
+    font-weight:600;
 }
 
 /*==================================
@@ -92,35 +67,21 @@ body{
 ===================================*/
 
 .viewer{
-
     background:#FFFFFF;
-
-    border:2px solid #DFC49A;
-
+    border:3px solid #FECA57;
     border-radius:22px;
-
     overflow:hidden;
-
     padding:20px;
-
-    box-shadow:0 10px 35px rgba(0,0,0,.08);
-
+    box-shadow:0 10px 35px rgba(254,202,87,0.2);
 }
 
 .viewer img{
-
     width:100%;
-
     max-height:720px;
-
     object-fit:contain;
-
     display:block;
-
     margin:auto;
-
     transition:.45s;
-
 }
 
 /*==================================
@@ -128,80 +89,49 @@ body{
 ===================================*/
 
 .category-title{
-
     text-align:center;
-
     margin:35px 0 20px;
-
     font-size:30px;
-
     font-weight:800;
-
-    color:#B88939;
-
+    color:#FF6B6B;
 }
+
 /*==================================
         أزرار المناسبات
 ===================================*/
 
 .categories{
-
     display:flex;
-
     justify-content:center;
-
     flex-wrap:wrap;
-
     gap:15px;
-
     margin-bottom:35px;
-
 }
 
 .category-btn{
-
-    background:#FFFDFB;
-
-    color:#7A522A;
-
-    border:2px solid #D8B06A;
-
+    background:#FFFFFF;
+    color:#4A3728;
+    border:3px solid #FECA57;
     border-radius:40px;
-
     padding:14px 28px;
-
     font-size:17px;
-
     font-weight:700;
-
     cursor:pointer;
-
     transition:.35s;
-
 }
 
 .category-btn:hover{
-
-    background:#D8B06A;
-
-    color:#fff;
-
+    background:#FECA57;
+    color:#4A3728;
     transform:translateY(-3px);
-
-    box-shadow:0 8px 18px rgba(184,137,57,.25);
-
+    box-shadow:0 8px 18px rgba(254,202,87,0.35);
 }
 
 .category-btn.active{
-
-    background:#B88939;
-
+    background:#FF6B6B;
     color:#fff;
-
-    border-color:#B88939;
-
-    box-shadow:0 8px 20px rgba(184,137,57,.35);
-
+    border-color:#FF6B6B;
+    box-shadow:0 8px 20px rgba(255,107,107,0.35);
 }
 
 /*==================================
@@ -209,93 +139,61 @@ body{
 ===================================*/
 
 .card{
-
-    background:#FFFDFB;
-
-    border:1px solid #E8D8C4;
-
+    background:#FFFFFF;
+    border:2px solid #FECA57;
     border-radius:22px;
-
     padding:30px;
-
     margin-top:25px;
-
-    box-shadow:0 10px 35px rgba(0,0,0,.08);
-
+    box-shadow:0 10px 35px rgba(254,202,87,0.15);
 }
 
 .price-box{
-
     text-align:center;
-
     font-size:34px;
-
-    color:#B88939;
-
+    color:#FF6B6B;
     font-weight:800;
-
     margin-bottom:25px;
-
+    background:linear-gradient(135deg, #FF6B6B, #FF8E53);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
 }
 
 .form-group{
-
     margin-bottom:20px;
-
 }
 
 .form-group label{
-
     display:block;
-
     margin-bottom:8px;
-
     font-weight:700;
-
-    color:#6E4A2D;
-
+    color:#4A3728;
 }
 
 input,
 select,
 textarea{
-
     width:100%;
-
     padding:15px;
-
-    border:1px solid #D8C4AF;
-
+    border:2px solid #F5D6B3;
     border-radius:12px;
-
     background:#FFFFFF;
-
-    color:#4E382C;
-
+    color:#4A3728;
     font-size:16px;
-
     outline:none;
-
     transition:.3s;
-
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-
-    border-color:#B88939;
-
-    box-shadow:0 0 10px rgba(184,137,57,.20);
-
+    border-color:#FF6B6B;
+    box-shadow:0 0 10px rgba(255,107,107,0.2);
 }
 
 textarea{
-
     resize:vertical;
-
     min-height:170px;
-
 }
 
 /*==================================
@@ -303,86 +201,53 @@ textarea{
 ===================================*/
 
 .summary{
-
     margin-top:20px;
-
-    background:#F9F5F0;
-
-    border:1px solid #E8D8C4;
-
+    background:#FFF8F0;
+    border:2px solid #F5D6B3;
     border-radius:15px;
-
     padding:18px;
-
 }
 
 .summary-row{
-
     display:flex;
-
     justify-content:space-between;
-
     padding:10px 0;
-
     font-size:18px;
-
-    border-bottom:1px dashed #E8D8C4;
-
+    border-bottom:1px dashed #F5D6B3;
 }
 
 .summary-row:last-child{
-
     border-bottom:none;
-
 }
 
 .summary-row.total{
-
-    color:#B88939;
-
+    color:#FF6B6B;
     font-size:22px;
-
     font-weight:800;
-
 }
+
 /*==================================
         زر الطلب
 ===================================*/
 
 .order-btn{
-
     width:100%;
-
     margin-top:25px;
-
     padding:18px;
-
     border:none;
-
     border-radius:14px;
-
-    background:linear-gradient(135deg,#D7B06A,#B88939);
-
+    background:linear-gradient(135deg, #FECA57, #FF6B6B);
     color:#fff;
-
     font-size:22px;
-
     font-weight:800;
-
     cursor:pointer;
-
     transition:.35s;
-
     letter-spacing:.5px;
-
 }
 
 .order-btn:hover{
-
     transform:translateY(-3px);
-
-    box-shadow:0 10px 25px rgba(184,137,57,.35);
-
+    box-shadow:0 10px 25px rgba(255,107,107,0.4);
 }
 
 /*==================================
@@ -390,49 +255,41 @@ textarea{
 ===================================*/
 
 .features{
-
     display:grid;
-
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
     gap:18px;
-
     margin-top:35px;
-
 }
 
 .feature{
-
     background:#FFF;
-
-    border:1px solid #E8D8C4;
-
+    border:2px solid #F5D6B3;
     border-radius:16px;
-
     padding:20px;
-
     text-align:center;
-
-    color:#6E4A2D;
-
+    color:#4A3728;
     font-size:17px;
-
     font-weight:700;
-
     transition:.3s;
-
     box-shadow:0 5px 15px rgba(0,0,0,.05);
+    position:relative;
+    overflow:hidden;
+}
 
+.feature::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:4px;
+    background:linear-gradient(90deg, #FECA57, #FF6B6B, #FF8E53);
 }
 
 .feature:hover{
-
-    border-color:#B88939;
-
+    border-color:#FF6B6B;
     transform:translateY(-5px);
-
-    box-shadow:0 12px 25px rgba(184,137,57,.18);
-
+    box-shadow:0 12px 25px rgba(255,107,107,0.2);
 }
 
 /*==================================
@@ -440,198 +297,119 @@ textarea{
 ===================================*/
 
 .footer{
-
     margin-top:60px;
-
-    background:#6E4A2D;
-
+    background:linear-gradient(135deg, #FF6B6B, #FF8E53);
     color:#fff;
-
     text-align:center;
-
     padding:45px 20px;
-
 }
 
 .footer-title{
-
     font-size:30px;
-
     font-weight:800;
-
-    color:#F5D48A;
-
+    color:#FECA57;
     margin-bottom:10px;
-
 }
 
 .footer-text{
-
-    color:#F7F2EB;
-
+    color:#FFF8F0;
     font-size:17px;
-
     margin-bottom:20px;
-
 }
 
 .footer-services{
-
     max-width:700px;
-
     margin:auto;
-
 }
 
 .footer-services div{
-
     margin:12px 0;
-
     font-size:18px;
-
 }
 
 .facebook-btn{
-
     display:inline-block;
-
     margin-top:25px;
-
     padding:15px 35px;
-
     border-radius:12px;
-
     background:#1877F2;
-
     color:#fff;
-
     text-decoration:none;
-
     font-size:19px;
-
     font-weight:700;
-
     transition:.3s;
-
 }
 
 .facebook-btn:hover{
-
     background:#125FCC;
-
     transform:scale(1.05);
-
 }
 
 .copyright{
-
     margin-top:30px;
-
-    color:#E8D8C4;
-
+    color:#F5D6B3;
     font-size:15px;
-
 }
+
 /*==================================
         نافذة نجاح الطلب
 ===================================*/
 
 .modal{
-
     display:none;
-
     position:fixed;
-
     inset:0;
-
     background:rgba(0,0,0,.55);
-
     justify-content:center;
-
     align-items:center;
-
     z-index:9999;
-
     backdrop-filter:blur(5px);
-
 }
 
 .modal-content{
-
     width:90%;
-
     max-width:430px;
-
     background:#FFFDFB;
-
-    border:2px solid #D7B06A;
-
+    border:3px solid #FECA57;
     border-radius:22px;
-
     padding:35px;
-
     text-align:center;
-
     box-shadow:0 20px 50px rgba(0,0,0,.20);
-
 }
 
 .success-icon{
-
     font-size:70px;
-
     margin-bottom:15px;
-
 }
 
 .modal-content h2{
-
-    color:#B88939;
-
+    color:#FF6B6B;
     margin-bottom:15px;
-
     font-size:28px;
-
 }
 
 .modal-content p{
-
-    color:#6E4A2D;
-
+    color:#4A3728;
     line-height:1.8;
-
     margin-bottom:12px;
-
 }
 
 .close-btn{
-
     margin-top:18px;
-
     border:none;
-
-    background:#B88939;
-
+    background:linear-gradient(135deg, #FECA57, #FF6B6B);
     color:#fff;
-
     padding:14px 35px;
-
     border-radius:12px;
-
     font-size:17px;
-
     font-weight:bold;
-
     cursor:pointer;
-
     transition:.3s;
-
 }
 
 .close-btn:hover{
-
-    background:#9F722D;
-
+    transform:scale(1.05);
+    box-shadow:0 8px 20px rgba(255,107,107,0.3);
 }
 
 /*==================================
@@ -639,29 +417,20 @@ textarea{
 ===================================*/
 
 ::-webkit-scrollbar{
-
     width:10px;
-
 }
 
 ::-webkit-scrollbar-track{
-
-    background:#F7F2EB;
-
+    background:#FFF8F0;
 }
 
 ::-webkit-scrollbar-thumb{
-
-    background:#C79B4D;
-
+    background:linear-gradient(135deg, #FECA57, #FF6B6B);
     border-radius:20px;
-
 }
 
 ::-webkit-scrollbar-thumb:hover{
-
-    background:#B88939;
-
+    background:linear-gradient(135deg, #FF6B6B, #FF8E53);
 }
 
 /*==================================
@@ -669,49 +438,32 @@ textarea{
 ===================================*/
 
 .viewer img{
-
     animation:fadeImage .5s;
-
 }
 
 @keyframes fadeImage{
-
     from{
-
         opacity:0;
-
         transform:scale(.97);
-
     }
-
     to{
-
         opacity:1;
-
         transform:scale(1);
-
     }
-
 }
 
 .card,
 .viewer,
 .feature{
-
     transition:.35s;
-
 }
 
 .viewer:hover{
-
     transform:translateY(-3px);
-
 }
 
 .card:hover{
-
     transform:translateY(-2px);
-
 }
 
 /*==================================
@@ -719,131 +471,67 @@ textarea{
 ===================================*/
 
 @media(max-width:768px){
-
-.container{
-
-    width:96%;
-
-}
-
-.site-title{
-
-    font-size:30px;
-
-}
-
-.site-desc{
-
-    font-size:16px;
-
-}
-
-.category-title{
-
-    font-size:23px;
-
-}
-
-.viewer{
-
-    padding:10px;
-
-}
-
-.viewer img{
-
-    max-height:420px;
-
-}
-
-.categories{
-
-    gap:10px;
-
-}
-
-.category-btn{
-
-    width:47%;
-
-    padding:12px;
-
-    font-size:15px;
-
-}
-
-.card{
-
-    padding:20px;
-
-}
-
-.price-box{
-
-    font-size:26px;
-
-}
-
-.summary-row{
-
-    font-size:16px;
-
-}
-
-.summary-row.total{
-
-    font-size:20px;
-
-}
-
-.order-btn{
-
-    font-size:18px;
-
-}
-
-.features{
-
-    grid-template-columns:1fr;
-
-}
-
-.feature{
-
-    font-size:15px;
-
-}
-
-.footer{
-
-    padding:35px 15px;
-
-}
-
-.footer-title{
-
-    font-size:24px;
-
-}
-
-.footer-services div{
-
-    font-size:16px;
-
-}
-
-.facebook-btn{
-
-    width:100%;
-
-    font-size:18px;
-
-}
-
-.modal-content{
-
-    padding:25px;
-
-}
-
+    .container{
+        width:96%;
+    }
+    .site-title{
+        font-size:30px;
+    }
+    .site-desc{
+        font-size:16px;
+    }
+    .category-title{
+        font-size:23px;
+    }
+    .viewer{
+        padding:10px;
+    }
+    .viewer img{
+        max-height:420px;
+    }
+    .categories{
+        gap:10px;
+    }
+    .category-btn{
+        width:47%;
+        padding:12px;
+        font-size:15px;
+    }
+    .card{
+        padding:20px;
+    }
+    .price-box{
+        font-size:26px;
+    }
+    .summary-row{
+        font-size:16px;
+    }
+    .summary-row.total{
+        font-size:20px;
+    }
+    .order-btn{
+        font-size:18px;
+    }
+    .features{
+        grid-template-columns:1fr;
+    }
+    .feature{
+        font-size:15px;
+    }
+    .footer{
+        padding:35px 15px;
+    }
+    .footer-title{
+        font-size:24px;
+    }
+    .footer-services div{
+        font-size:16px;
+    }
+    .facebook-btn{
+        width:100%;
+        font-size:18px;
+    }
+    .modal-content{
+        padding:25px;
+    }
 }
