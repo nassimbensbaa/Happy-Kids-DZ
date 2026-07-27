@@ -81,6 +81,34 @@ body{
 }
 
 /*==================================
+      وصف الكتاب
+===================================*/
+
+.product-description{
+    margin:20px 0;
+    padding:20px;
+    background:#ffffff;
+    border-radius:15px;
+    line-height:2;
+    font-size:17px;
+    text-align:right;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.product-description h3{
+    margin:15px 0;
+    color:#2196F3;
+}
+
+.product-description ul{
+    padding-right:20px;
+}
+
+.product-description li{
+    margin:10px 0;
+}
+
+/*==================================
         عرض الصورة
 ===================================*/
 
