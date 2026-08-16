@@ -212,22 +212,24 @@ async function selectProduct(index, btn) {
     // إرسال ViewContent
     //--------------------------------
 
-await trackEvent(
-    "Purchase",
-    {
-        content_name:
-            selectedProduct.name,
+    await trackEvent(
 
-        value:
-            PRODUCT_PRICE,
+        "ViewContent",
 
-        currency:
-            "DZD",
+        {
 
-        phone:
-            phone
-    }
-);
+            content_name:
+                selectedProduct.name,
+
+            value:
+                PRODUCT_PRICE,
+
+            currency:
+                "DZD"
+
+        }
+
+    );
 
     //--------------------------------
     // تغيير الصورة
