@@ -3,21 +3,21 @@ let deliveryData = [];
 let PRODUCT_PRICE = 0;
 let selectedProduct = null;
 
+
 /*=================================
-Meta
+ Meta
 =================================*/
 
 function generateEventId() {
 
     if (window.crypto && crypto.randomUUID) {
-
         return crypto.randomUUID();
-
     }
 
-    return "event_" + Date.now() + "_" + Math.random().toString(36).substring(2);
-
+    return "event_" + Date.now() + "_" +
+        Math.random().toString(36).substring(2);
 }
+
 
 function getCookie(name) {
 
@@ -28,19 +28,18 @@ function getCookie(name) {
         value.split("; " + name + "=");
 
     if (parts.length === 2) {
-
         return parts.pop().split(";").shift();
-
     }
 
     return "";
-
 }
+
 
 async function trackEvent(eventName, data = {}) {
 
     const eventId =
         generateEventId();
+
 
     //--------------------------------
     // Meta Pixel
@@ -49,13 +48,9 @@ async function trackEvent(eventName, data = {}) {
     if (typeof fbq !== "undefined") {
 
         fbq(
-
             "track",
-
             eventName,
-
             {
-
                 content_name:
                     data.content_name || "",
 
@@ -64,19 +59,15 @@ async function trackEvent(eventName, data = {}) {
 
                 currency:
                     data.currency || "DZD"
-
             },
-
             {
-
                 eventID:
                     eventId
-
             }
-
         );
 
     }
+
 
     //--------------------------------
     // Meta Conversions API
@@ -84,103 +75,119 @@ async function trackEvent(eventName, data = {}) {
 
     try {
 
-        await fetch("/api/meta", {
+        await fetch(
+            "/api/meta",
+            {
+                method: "POST",
 
-            method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-            headers: {
+                body: JSON.stringify({
 
-                "Content-Type": "application/json"
+                    eventName,
 
-            },
+                    eventId,
 
-            body: JSON.stringify({
+                    value:
+                        Number(data.value || 0),
 
-                eventName,
+                    currency:
+                        data.currency || "DZD",
 
-                eventId,
+                    productName:
+                        data.content_name || "",
 
-                value:
-                    Number(data.value || 0),
+                    phone:
+                        data.phone || "",
 
-                currency:
-                    data.currency || "DZD",
+                    pageUrl:
+                        window.location.href,
 
-                productName:
-                    data.content_name || "",
+                    userAgent:
+                        navigator.userAgent,
 
-                phone:
-                    data.phone || "",
+                    fbp:
+                        getCookie("_fbp"),
 
-                pageUrl:
-                    window.location.href,
+                    fbc:
+                        getCookie("_fbc")
 
-                userAgent:
-                    navigator.userAgent,
-
-                fbp:
-                    getCookie("_fbp"),
-
-                fbc:
-                    getCookie("_fbc")
-
-            })
-
-        });
+                })
+            }
+        );
 
     }
 
     catch (err) {
 
-        console.error(err);
+        console.error(
+            "Meta API Error:",
+            err
+        );
 
     }
+
 
     return eventId;
 
 }
-//================================
-// تحميل المنتجات
-//================================
+
+
+/*================================
+ تحميل المنتجات
+================================*/
+
 async function loadProducts() {
 
     try {
 
-        const res = await fetch("/api/products");
+        const res =
+            await fetch("/api/products");
 
-        products = await res.json();
+        products =
+            await res.json();
+
 
         let html = "";
 
-        products.forEach((p, index) => {
 
-            html += `
-                <button
-                    class="category-btn"
-                    onclick="selectProduct(${index},this)">
-                    ${p.name}
-                </button>
-            `;
+        products.forEach(
+            (p, index) => {
 
-        });
+                html += `
+                    <button
+                        class="category-btn"
+                        onclick="selectProduct(${index},this)">
+                        ${p.name}
+                    </button>
+                `;
 
-        document.getElementById("categories").innerHTML = html;
+            }
+        );
+
+
+        document.getElementById(
+            "categories"
+        ).innerHTML = html;
+
 
         //--------------------------------
-        // اختيار أول تصميم تلقائياً
+        // اختيار أول منتج تلقائياً
         //--------------------------------
 
         if (products.length > 0) {
 
             const firstButton =
-                document.querySelector(".category-btn");
+                document.querySelector(
+                    ".category-btn"
+                );
 
             await selectProduct(
-
                 0,
-
                 firstButton
-
             );
 
         }
@@ -191,31 +198,42 @@ async function loadProducts() {
 
         console.error(err);
 
-        alert("تعذر تحميل المنتجات");
+        alert(
+            "تعذر تحميل المنتجات"
+        );
 
     }
 
 }
 
-//================================
-// اختيار منتج
-//================================
+
+/*================================
+ اختيار منتج
+================================*/
+
 async function selectProduct(index, btn) {
 
     selectedProduct =
         products[index];
 
+
+    if (!selectedProduct) {
+        return;
+    }
+
+
     PRODUCT_PRICE =
-        Number(selectedProduct.price);
+        Number(
+            selectedProduct.price || 0
+        );
+
 
     //--------------------------------
     // إرسال ViewContent
     //--------------------------------
 
     await trackEvent(
-
         "ViewContent",
-
         {
 
             content_name:
@@ -228,54 +246,93 @@ async function selectProduct(index, btn) {
                 "DZD"
 
         }
-
     );
+
 
     //--------------------------------
     // تغيير الصورة
     //--------------------------------
 
     const img =
-        document.getElementById("mainImage");
+        document.getElementById(
+            "mainImage"
+        );
 
-    img.style.opacity = "0";
 
-    img.src =
-        "images/" + selectedProduct.image;
+    if (img) {
 
-    img.onload = function () {
+        img.style.opacity = "0";
 
-        img.style.opacity = "1";
+        img.src =
+            "images/" +
+            selectedProduct.image;
 
-    };
+
+        img.onload =
+            function () {
+
+                img.style.opacity = "1";
+
+            };
+
+    }
+
 
     //--------------------------------
     // تحديث الأسعار
     //--------------------------------
 
-    document.getElementById("productPrice").textContent =
-        PRODUCT_PRICE;
+    const productPrice =
+        document.getElementById(
+            "productPrice"
+        );
 
-    document.getElementById("priceValue").textContent =
-        PRODUCT_PRICE;
+    if (productPrice) {
+
+        productPrice.textContent =
+            PRODUCT_PRICE;
+
+    }
+
+
+    const priceValue =
+        document.getElementById(
+            "priceValue"
+        );
+
+    if (priceValue) {
+
+        priceValue.textContent =
+            PRODUCT_PRICE;
+
+    }
+
 
     //--------------------------------
     // الزر النشط
     //--------------------------------
 
     document
-        .querySelectorAll(".category-btn")
+        .querySelectorAll(
+            ".category-btn"
+        )
         .forEach(button => {
 
-            button.classList.remove("active");
+            button.classList.remove(
+                "active"
+            );
 
         });
 
+
     if (btn) {
 
-        btn.classList.add("active");
+        btn.classList.add(
+            "active"
+        );
 
     }
+
 
     //--------------------------------
     // تحديث المجموع
@@ -284,9 +341,12 @@ async function selectProduct(index, btn) {
     updateTotal();
 
 }
-//================================
-// تحميل أسعار التوصيل
-//================================
+
+
+/*================================
+ تحميل أسعار التوصيل
+================================*/
+
 async function loadDelivery() {
 
     try {
@@ -294,24 +354,40 @@ async function loadDelivery() {
         const res =
             await fetch("/api/delivery");
 
+
         deliveryData =
             await res.json();
+
 
         let html =
             '<option value="">اختر الولاية</option>';
 
-        deliveryData.forEach(item => {
 
-            html += `
-                <option value="${item.name}">
-                    ${item.name}
-                </option>
-            `;
+        deliveryData.forEach(
+            item => {
 
-        });
+                html += `
+                    <option value="${item.name}">
+                        ${item.name}
+                    </option>
+                `;
 
-        document.getElementById("wilaya").innerHTML =
-            html;
+            }
+        );
+
+
+        const wilaya =
+            document.getElementById(
+                "wilaya"
+            );
+
+
+        if (wilaya) {
+
+            wilaya.innerHTML =
+                html;
+
+        }
 
     }
 
@@ -319,101 +395,247 @@ async function loadDelivery() {
 
         console.error(err);
 
-        alert("تعذر تحميل أسعار التوصيل");
+        alert(
+            "تعذر تحميل أسعار التوصيل"
+        );
 
     }
 
 }
 
-//================================
-// تحديث الأسعار عند تغيير الولاية
-//================================
-document.addEventListener("change", function (e) {
 
-    if (
+/*================================
+ تحديث الأسعار عند تغيير الولاية
+================================*/
 
-        e.target.id === "wilaya"
+document.addEventListener(
+    "change",
+    function (e) {
 
-        ||
+        if (
+            e.target.id === "wilaya" ||
+            e.target.id === "deliveryType"
+        ) {
 
-        e.target.id === "deliveryType"
+            updateTotal();
 
-    ) {
-
-        updateTotal();
+        }
 
     }
+);
 
-});
 
-//================================
-// حساب السعر الإجمالي
-//================================
+/*================================
+ حساب السعر الإجمالي
+================================*/
+
 function updateTotal() {
 
     let deliveryPrice = 0;
 
+
+    const wilayaElement =
+        document.getElementById(
+            "wilaya"
+        );
+
+
+    const deliveryTypeElement =
+        document.getElementById(
+            "deliveryType"
+        );
+
+
+    if (
+        !wilayaElement ||
+        !deliveryTypeElement
+    ) {
+
+        return;
+
+    }
+
+
     const wilaya =
-        document.getElementById("wilaya").value;
+        wilayaElement.value;
+
 
     const deliveryType =
-        document.getElementById("deliveryType").value;
+        deliveryTypeElement.value;
+
 
     const row =
-        deliveryData.find(item => item.name === wilaya);
+        deliveryData.find(
+            item =>
+                item.name === wilaya
+        );
+
 
     if (row) {
 
-        if (deliveryType === "home") {
+        if (
+            deliveryType === "home"
+        ) {
 
             deliveryPrice =
-                Number(row.home);
+                Number(
+                    row.home || 0
+                );
 
         }
 
         else {
 
             deliveryPrice =
-                Number(row.office);
+                Number(
+                    row.office || 0
+                );
 
         }
 
     }
 
-    document.getElementById("deliveryPrice").textContent =
-        deliveryPrice;
 
-    document.getElementById("totalPrice").textContent =
-        PRODUCT_PRICE + deliveryPrice;
+    const deliveryPriceElement =
+        document.getElementById(
+            "deliveryPrice"
+        );
+
+
+    if (deliveryPriceElement) {
+
+        deliveryPriceElement.textContent =
+            deliveryPrice;
+
+    }
+
+
+    const totalPriceElement =
+        document.getElementById(
+            "totalPrice"
+        );
+
+
+    if (totalPriceElement) {
+
+        totalPriceElement.textContent =
+            PRODUCT_PRICE +
+            deliveryPrice;
+
+    }
 
 }
 
-//================================
-// إعادة تعيين النموذج
-//================================
+
+/*================================
+ إعادة تعيين النموذج
+================================*/
+
 function resetForm() {
 
-    document.getElementById("recipientName").value = "";
 
-    document.getElementById("fullName").value = "";
+    const recipientName =
+        document.getElementById(
+            "recipientName"
+        );
 
-    document.getElementById("phone").value = "";
 
-    document.getElementById("officeName").value = "";
+    if (recipientName) {
 
-    document.getElementById("notes").value = "";
+        recipientName.value = "";
 
-    document.getElementById("wilaya").selectedIndex = 0;
+    }
 
-    document.getElementById("deliveryType").selectedIndex = 0;
+
+    const fullName =
+        document.getElementById(
+            "fullName"
+        );
+
+
+    if (fullName) {
+
+        fullName.value = "";
+
+    }
+
+
+    const phone =
+        document.getElementById(
+            "phone"
+        );
+
+
+    if (phone) {
+
+        phone.value = "";
+
+    }
+
+
+    const officeName =
+        document.getElementById(
+            "officeName"
+        );
+
+
+    if (officeName) {
+
+        officeName.value = "";
+
+    }
+
+
+    const notes =
+        document.getElementById(
+            "notes"
+        );
+
+
+    if (notes) {
+
+        notes.value = "";
+
+    }
+
+
+    const wilaya =
+        document.getElementById(
+            "wilaya"
+        );
+
+
+    if (wilaya) {
+
+        wilaya.selectedIndex = 0;
+
+    }
+
+
+    const deliveryType =
+        document.getElementById(
+            "deliveryType"
+        );
+
+
+    if (deliveryType) {
+
+        deliveryType.selectedIndex = 0;
+
+    }
+
 
     updateTotal();
 
 }
-//================================
-// إرسال الطلب
-//================================
+
+
+/*================================
+ إرسال الطلب
+================================*/
+
 async function sendOrder() {
+
 
     //--------------------------------
     // التحقق من اختيار المنتج
@@ -421,98 +643,200 @@ async function sendOrder() {
 
     if (selectedProduct == null) {
 
-        alert("اختر نوع التصميم");
+        alert(
+            "اختر نوع التصميم"
+        );
 
         return;
 
     }
+
 
     //--------------------------------
     // قراءة البيانات
     //--------------------------------
 
     const recipientName =
-        document.getElementById("recipientName").value.trim();
+        document.getElementById(
+            "recipientName"
+        ).value.trim();
+
 
     const fullName =
-        document.getElementById("fullName").value.trim();
+        document.getElementById(
+            "fullName"
+        ).value.trim();
 
-    const phone =
-        document.getElementById("phone").value.trim();
-
-    const wilaya =
-        document.getElementById("wilaya").value;
-
-    const deliveryType =
-        document.getElementById("deliveryType").value;
-
-    const officeName =
-        document.getElementById("officeName").value.trim();
-
-    const notes =
-        document.getElementById("notes").value.trim();
 
     //--------------------------------
-    // التحقق من الحقول
+    // دمج الاسم واللقب
+    //--------------------------------
+
+    const nameAndSurname =
+        (
+            recipientName +
+            " " +
+            fullName
+        ).trim();
+
+
+    const phone =
+        document.getElementById(
+            "phone"
+        ).value.trim();
+
+
+    const wilaya =
+        document.getElementById(
+            "wilaya"
+        ).value;
+
+
+    const deliveryType =
+        document.getElementById(
+            "deliveryType"
+        ).value;
+
+
+    const officeName =
+        document.getElementById(
+            "officeName"
+        ).value.trim();
+
+
+    const notes =
+        document.getElementById(
+            "notes"
+        ).value.trim();
+
+
+    //--------------------------------
+    // التحقق من الاسم
     //--------------------------------
 
     if (recipientName === "") {
 
-        alert("أدخل اسم الناجح");
+        alert(
+            "أدخل الاسم"
+        );
 
         return;
 
     }
+
+
+    //--------------------------------
+    // التحقق من اللقب
+    //--------------------------------
 
     if (fullName === "") {
 
-        alert("أدخل الاسم الكامل");
+        alert(
+            "أدخل اللقب"
+        );
 
         return;
 
     }
+
+
+    //--------------------------------
+    // التحقق من الهاتف
+    //--------------------------------
 
     if (phone === "") {
 
-        alert("أدخل رقم الهاتف");
+        alert(
+            "أدخل رقم الهاتف"
+        );
 
         return;
 
     }
+
 
     const phoneRegex =
         /^(05|06|07)[0-9]{8}$/;
 
-    if (!phoneRegex.test(phone)) {
 
-        alert("يرجى إدخال رقم هاتف صحيح");
+    if (
+        !phoneRegex.test(phone)
+    ) {
+
+        alert(
+            "يرجى إدخال رقم هاتف صحيح"
+        );
 
         return;
 
     }
+
+
+    //--------------------------------
+    // التحقق من الولاية
+    //--------------------------------
 
     if (wilaya === "") {
 
-        alert("اختر الولاية");
+        alert(
+            "اختر الولاية"
+        );
 
         return;
 
     }
+
 
     //--------------------------------
     // حساب سعر التوصيل
     //--------------------------------
 
     const row =
-        deliveryData.find(x => x.name === wilaya);
+        deliveryData.find(
+            x =>
+                x.name === wilaya
+        );
 
-    const deliveryPrice =
+
+    if (!row) {
+
+        alert(
+            "تعذر تحديد سعر التوصيل"
+        );
+
+        return;
+
+    }
+
+
+    let deliveryPrice = 0;
+
+
+    if (
         deliveryType === "home"
-            ? Number(row.home)
-            : Number(row.office);
+    ) {
+
+        deliveryPrice =
+            Number(
+                row.home || 0
+            );
+
+    }
+
+    else {
+
+        deliveryPrice =
+            Number(
+                row.office || 0
+            );
+
+    }
+
 
     const total =
-        PRODUCT_PRICE + deliveryPrice;
+        PRODUCT_PRICE +
+        deliveryPrice;
+
 
     //--------------------------------
     // إرسال InitiateCheckout
@@ -520,9 +844,7 @@ async function sendOrder() {
 
     const eventId =
         await trackEvent(
-
             "InitiateCheckout",
-
             {
 
                 content_name:
@@ -538,16 +860,18 @@ async function sendOrder() {
                     phone
 
             }
-
         );
+
 
     //--------------------------------
     // تجهيز بيانات الطلب
     //--------------------------------
+    // ملاحظة:
+    // eventId لا يتم إرساله إلى Google Sheets
+    // recipientName و fullName يتم دمجهما
+    //--------------------------------
 
     const orderData = {
-
-        eventId,
 
         productName:
             selectedProduct.name,
@@ -555,30 +879,38 @@ async function sendOrder() {
         image:
             selectedProduct.image,
 
-        recipientName,
+        fullName:
+            nameAndSurname,
 
-        notes,
+        notes:
+            notes,
 
-        fullName,
+        phone:
+            phone,
 
-        phone,
+        wilaya:
+            wilaya,
 
-        wilaya,
+        deliveryType:
+            deliveryType,
 
-        deliveryType,
-
-        officeName,
+        officeName:
+            officeName,
 
         productPrice:
             PRODUCT_PRICE,
 
-        deliveryPrice,
+        deliveryPrice:
+            deliveryPrice,
 
-        total
+        total:
+            total
 
     };
 
+
     try {
+
 
         //--------------------------------
         // إرسال الطلب
@@ -586,9 +918,7 @@ async function sendOrder() {
 
         const response =
             await fetch(
-
                 "/api/send",
-
                 {
 
                     method: "POST",
@@ -601,28 +931,38 @@ async function sendOrder() {
                     },
 
                     body:
-                        JSON.stringify(orderData)
+                        JSON.stringify(
+                            orderData
+                        )
 
                 }
-
             );
+
+
+        //--------------------------------
+        // قراءة النتيجة
+        //--------------------------------
 
         const result =
             await response.json();
-                //--------------------------------
+
+
+        //--------------------------------
         // نجاح إرسال الطلب
         //--------------------------------
 
-        if (response.ok && result.ok) {
+        if (
+            response.ok &&
+            result.ok
+        ) {
+
 
             //--------------------------------
             // إرسال Purchase
             //--------------------------------
 
             await trackEvent(
-
                 "Purchase",
-
                 {
 
                     content_name:
@@ -638,15 +978,26 @@ async function sendOrder() {
                         phone
 
                 }
-
             );
+
 
             //--------------------------------
             // نافذة النجاح
             //--------------------------------
 
-            document.getElementById("successModal").style.display =
-                "flex";
+            const successModal =
+                document.getElementById(
+                    "successModal"
+                );
+
+
+            if (successModal) {
+
+                successModal.style.display =
+                    "flex";
+
+            }
+
 
             //--------------------------------
             // إعادة تعيين النموذج
@@ -654,86 +1005,114 @@ async function sendOrder() {
 
             resetForm();
 
+
             //--------------------------------
             // العودة لأول منتج
             //--------------------------------
 
-            if (products.length > 0) {
+            if (
+                products.length > 0
+            ) {
 
                 const firstButton =
-                    document.querySelector(".category-btn");
+                    document.querySelector(
+                        ".category-btn"
+                    );
+
 
                 await selectProduct(
-
                     0,
-
                     firstButton
-
                 );
 
             }
+
 
         }
 
         else {
 
-            alert(result.error || "فشل إرسال الطلب");
+            alert(
+                result.error ||
+                "فشل إرسال الطلب"
+            );
 
         }
 
     }
+
 
     catch (err) {
 
-        console.error(err);
+        console.error(
+            "Order Error:",
+            err
+        );
 
-        alert("حدث خطأ أثناء إرسال الطلب");
+        alert(
+            "حدث خطأ أثناء إرسال الطلب"
+        );
 
     }
 
 }
 
-//================================
-// إغلاق نافذة النجاح
-//================================
+
+/*================================
+ إغلاق نافذة النجاح
+================================*/
+
 function closeModal() {
 
-    document.getElementById("successModal").style.display =
-        "none";
+    const modal =
+        document.getElementById(
+            "successModal"
+        );
+
+
+    if (modal) {
+
+        modal.style.display =
+            "none";
+
+    }
 
 }
 
-//================================
-// تشغيل الموقع
-//================================
-window.onload = async function () {
 
-    //--------------------------------
-    // تحميل البيانات
-    //--------------------------------
+/*================================
+ تشغيل الموقع
+================================*/
 
-    await loadDelivery();
+window.onload =
+    async function () {
 
-    await loadProducts();
 
-    updateTotal();
+        //--------------------------------
+        // تحميل البيانات
+        //--------------------------------
 
-    //--------------------------------
-    // إرسال PageView
-    //--------------------------------
+        await loadDelivery();
 
-    await trackEvent(
+        await loadProducts();
 
-        "PageView",
 
-        {
+        updateTotal();
 
-            value: 0,
 
-            currency: "DZD"
+        //--------------------------------
+        // إرسال PageView
+        //--------------------------------
 
-        }
+        await trackEvent(
+            "PageView",
+            {
 
-    );
+                value: 0,
 
-};
+                currency: "DZD"
+
+            }
+        );
+
+    };
