@@ -219,12 +219,23 @@
 </div>
 
 
-    <div class="viewer">
+    <div class="viewer" id="imageViewer">
+
+        <button type="button" class="viewer-arrow viewer-prev" id="prevImage" aria-label="الصورة السابقة">‹</button>
 
         <img
             id="mainImage"
             src=""
-            alt="صورة الكتاب">
+            alt="صورة الكتاب"
+            draggable="false">
+
+        <button type="button" class="viewer-arrow viewer-next" id="nextImage" aria-label="الصورة التالية">›</button>
+
+        <div class="swipe-hint" id="swipeHint" aria-hidden="true">
+            <span>‹ اسحب</span>
+            <span>للتنقل</span>
+            <span>اسحب ›</span>
+        </div>
 
     </div>
 
