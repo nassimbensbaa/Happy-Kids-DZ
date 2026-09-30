@@ -264,6 +264,12 @@ async function selectProduct(index, btn) {
 
     if (img) {
 
+        // عرض الصورة المختارة بحجم كبير في الأعلى
+        const viewer = document.querySelector(".viewer");
+        if (viewer) {
+            viewer.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
         img.style.opacity = "0";
 
         img.src =
