@@ -145,7 +145,7 @@ async function loadProducts() {
     try {
 
         const res =
-            await fetch("/api/products");
+            await fetch("/products/products.json", { cache: "no-store" });
 
         products =
             await res.json();
@@ -232,58 +232,41 @@ async function selectProduct(index, btn) {
 
 
     //--------------------------------
-    // إرسال ViewContent
+    // تغيير الصورة فوراً
     //--------------------------------
 
-    await trackEvent(
-        "ViewContent",
-        {
-
-            content_name:
-                selectedProduct.name,
-
-            value:
-                PRODUCT_PRICE,
-
-            currency:
-                "DZD"
-
-        }
-    );
-
-
-    //--------------------------------
-    // تغيير الصورة
-    //--------------------------------
-
-    const img =
-        document.getElementById(
-            "mainImage"
-        );
-
+    const img = document.getElementById("mainImage");
 
     if (img) {
+        const imagePath = String(selectedProduct.image || "").replace(/^\/+/, "");
+        img.style.opacity = "0.35";
+        img.src = imagePath.startsWith("images/") ? imagePath : "images/" + imagePath;
 
-        // عرض الصورة المختارة بحجم كبير في الأعلى
-        const viewer = document.querySelector(".viewer");
-        if (viewer) {
-            viewer.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        img.onload = function () {
+            img.style.opacity = "1";
+        };
 
-        img.style.opacity = "0";
+        img.onerror = function () {
+            console.error("تعذر تحميل الصورة:", img.src);
+            img.style.opacity = "1";
+        };
+    }
 
-        img.src =
-            "images/" +
-            selectedProduct.image;
+    //--------------------------------
+    // إرسال ViewContent بعد تحديث الصورة
+    //--------------------------------
 
-
-        img.onload =
-            function () {
-
-                img.style.opacity = "1";
-
-            };
-
+    try {
+        await trackEvent(
+            "ViewContent",
+            {
+                content_name: selectedProduct.name,
+                value: PRODUCT_PRICE,
+                currency: "DZD"
+            }
+        );
+    } catch (e) {
+        console.warn("ViewContent tracking error:", e);
     }
 
     document.querySelectorAll(".category-btn").forEach(function (item) {
