@@ -1,26 +1,51 @@
-export default async function handler(req, res) {
-
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
-    try {
-
-        const GOOGLE_URL = process.env.GOOGLE_SCRIPT_URL;
-
-        const response = await fetch(
-            GOOGLE_URL + "?action=products"
-        );
-
-        const data = await response.json();
-
-        res.status(200).json(data);
-
-    } catch (err) {
-
-        res.status(500).json({
-            ok: false,
-            error: err.message
-        });
-
-    }
-
-}
+  {
+    "name": "03",
+    "image": "03.png",
+    "price": 950
+  },
+  {
+    "name": "04",
+    "image": "04.png",
+    "price": 950
+  },
+  {
+    "name": "05",
+    "image": "05.png",
+    "price": 950
+  },
+  {
+    "name": "06",
+    "image": "06.png",
+    "price": 950
+  },
+  {
+    "name": "07",
+    "image": "07.png",
+    "price": 950
+  },
+  {
+    "name": "08",
+    "image": "08.png",
+    "price": 950
+  },
+  {
+    "name": "09",
+    "image": "09.png",
+    "price": 950
+  },
+  {
+    "name": "10",
+    "image": "10.png",
+    "price": 950
+  },
+  {
+    "name": "11",
+    "image": "11.png",
+    "price": 950
+  },
+  {
+    "name": "image 02",
+    "image": "image 02.png",
+    "price": 950
+  }
+]
