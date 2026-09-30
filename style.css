@@ -158,39 +158,15 @@ body{
         أزرار المناسبات
 ===================================*/
 
-.categories{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:15px;
-    margin-bottom:35px;
-}
-
-.category-btn{
-    background:#FFFFFF;
-    color:#2C5F8A;
-    border:3px solid #7EC8E3;
-    border-radius:50px;
-    padding:14px 28px;
-    font-size:17px;
-    font-weight:800;
-    cursor:pointer;
-    transition:.35s;
-    box-shadow:0 4px 0 #7EC8E3;
-}
-
-.category-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 8px 0 #7EC8E3, 0 10px 25px rgba(126,200,227,0.3);
-    background:#E8F4F8;
-}
-
-.category-btn.active{
-    background:linear-gradient(135deg, #4A9BD9, #2C5F8A);
-    color:#FFFFFF;
-    border-color:#4A9BD9;
-    box-shadow:0 8px 20px rgba(74,155,217,0.4);
-}
+.categories{display:flex;justify-content:flex-start;flex-wrap:nowrap;gap:14px;margin:0 0 35px;padding:8px 4px 16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;cursor:grab;scrollbar-width:thin;}
+.categories:active{cursor:grabbing;}
+.categories::-webkit-scrollbar{height:8px;}
+.category-btn{flex:0 0 125px;width:125px;min-width:125px;height:145px;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:6px;background:#FFFFFF;color:#2C5F8A;border:3px solid #7EC8E3;border-radius:18px;font-size:14px;font-weight:800;cursor:pointer;transition:.3s;box-shadow:0 4px 0 #7EC8E3;scroll-snap-align:center;overflow:hidden;}
+.category-btn.image-thumb img{width:100%;height:105px;object-fit:cover;border-radius:11px;display:block;background:#E8F4F8;}
+.category-btn.image-thumb span{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;}
+.category-btn:hover{transform:translateY(-3px);box-shadow:0 8px 0 #7EC8E3,0 10px 25px rgba(126,200,227,.3);background:#E8F4F8;}
+.category-btn.active{background:linear-gradient(135deg,#4A9BD9,#2C5F8A);color:#FFFFFF;border-color:#4A9BD9;box-shadow:0 7px 18px rgba(74,155,217,.4);transform:translateY(-2px);}
+.category-btn.active img{border:3px solid #FFFFFF;}
 
 /*==================================
         بطاقة الطلب
@@ -613,14 +589,9 @@ textarea{
     .viewer img{
         max-height:420px;
     }
-    .categories{
-        gap:10px;
-    }
-    .category-btn{
-        width:47%;
-        padding:12px;
-        font-size:15px;
-    }
+    .categories{gap:10px;padding-bottom:14px;}
+    .category-btn{flex-basis:105px;width:105px;min-width:105px;height:125px;padding:6px;font-size:12px;border-width:2px;box-shadow:0 3px 0 #7EC8E3;}
+    .category-btn.image-thumb img{height:88px;}
     .card{
         padding:20px;
     }
@@ -659,3 +630,6 @@ textarea{
         padding:25px;
     }
 }
+
+.categories.dragging{cursor:grabbing;scroll-snap-type:none;}
+.categories.dragging .category-btn{pointer-events:none;}
