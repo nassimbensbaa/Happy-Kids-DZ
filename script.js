@@ -140,73 +140,46 @@ async function trackEvent(eventName, data = {}) {
  تحميل المنتجات
 ================================*/
 
-async function loadProducts() {
+function loadProducts() {
 
-    try {
+    // تحميل المنتجات مباشرة من مجلد images — بدون Google Sheet وبدون products.json
+    products = [
+        { name: '01', image: '01.png', price: 0 },
+        { name: '02', image: '02.png', price: 0 },
+        { name: '03', image: '03.png', price: 0 },
+        { name: '04', image: '04.png', price: 0 },
+        { name: '05', image: '05.png', price: 0 },
+        { name: '06', image: '06.png', price: 0 },
+        { name: '07', image: '07.png', price: 0 },
+        { name: '08', image: '08.png', price: 0 },
+        { name: '09', image: '09.png', price: 0 },
+        { name: '10', image: '10.png', price: 0 },
+        { name: '11', image: '11.png', price: 0 },
+        { name: 'image 02', image: 'image 02.png', price: 0 },
+    ];
 
-        const res =
-            await fetch("/products/products.json", { cache: "no-store" });
+    let html = "";
 
-        products =
-            await res.json();
+    products.forEach((p, index) => {
+        html += `
+            <button
+                class="category-btn image-thumb"
+                onclick="selectProduct(${index},this)"
+                aria-label="عرض ${p.name}"
+                title="${p.name}">
+                <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+                <span>${p.name}</span>
+            </button>
+        `;
+    });
 
+    const categories = document.getElementById("categories");
+    if (categories) categories.innerHTML = html;
 
-        let html = "";
-
-
-        products.forEach(
-            (p, index) => {
-
-                html += `
-                    <button
-                        class="category-btn image-thumb"
-                        onclick="selectProduct(${index},this)"
-                        aria-label="عرض ${p.name}"
-                        title="${p.name}">
-                        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
-                        <span>${p.name}</span>
-                    </button>
-                `;
-
-            }
-        );
-
-
-        document.getElementById(
-            "categories"
-        ).innerHTML = html;
-
-
-        //--------------------------------
-        // اختيار أول منتج تلقائياً
-        //--------------------------------
-
-        if (products.length > 0) {
-
-            const firstButton =
-                document.querySelector(
-                    ".category-btn"
-                );
-
-            await selectProduct(
-                0,
-                firstButton
-            );
-
-        }
-
+    if (products.length > 0) {
+        const firstButton = document.querySelector(".category-btn");
+        selectProduct(0, firstButton);
     }
-
-    catch (err) {
-
-        console.error(err);
-
-        alert(
-            "تعذر تحميل المنتجات"
-        );
-
-    }
-
 }
 
 
