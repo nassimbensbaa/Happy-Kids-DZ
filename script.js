@@ -2,6 +2,7 @@ let products = [];
 let deliveryData = [];
 let PRODUCT_PRICE = 0;
 let selectedProduct = null;
+let currentProductIndex = 0;
 
 
 /*=================================
@@ -231,13 +232,14 @@ async function loadProducts() {
 
 async function selectProduct(index, btn) {
 
-    selectedProduct =
-        products[index];
-
-
-    if (!selectedProduct) {
+    if (!Array.isArray(products) || !products[index]) {
         return;
     }
+
+    currentProductIndex = index;
+
+    selectedProduct =
+        products[index];
 
 
     PRODUCT_PRICE =
@@ -358,6 +360,148 @@ async function selectProduct(index, btn) {
 
 }
 
+
+
+/*================================
+ التنقل بالسحب بين الصور
+================================*/
+
+(function setupImageSwipe() {
+
+    const viewer = document.querySelector(".viewer");
+
+    if (!viewer) {
+        return;
+    }
+
+    let startX = 0;
+    let startY = 0;
+    let isPointerDown = false;
+    let moved = false;
+
+    function changeImageBySwipe(deltaX) {
+
+        if (!Array.isArray(products) || products.length < 2) {
+            return;
+        }
+
+        // سحب لليسار = الصورة التالية
+        // سحب لليمين = الصورة السابقة
+        const direction = deltaX < 0 ? 1 : -1;
+
+        let nextIndex =
+            currentProductIndex + direction;
+
+        if (nextIndex < 0) {
+            nextIndex = products.length - 1;
+        }
+
+        if (nextIndex >= products.length) {
+            nextIndex = 0;
+        }
+
+        const button =
+            document.querySelectorAll(".category-btn")[nextIndex];
+
+        selectProduct(nextIndex, button);
+    }
+
+    // الهاتف واللمس
+    viewer.addEventListener("touchstart", function (e) {
+
+        if (!e.touches || !e.touches.length) {
+            return;
+        }
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+    }, { passive: true });
+
+    viewer.addEventListener("touchend", function (e) {
+
+        if (!e.changedTouches || !e.changedTouches.length) {
+            return;
+        }
+
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+
+        // تجاهل السحب العمودي أو اللمسات القصيرة
+        if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY)) {
+            return;
+        }
+
+        changeImageBySwipe(deltaX);
+
+    }, { passive: true });
+
+    // الكمبيوتر: السحب بالماوس
+    viewer.addEventListener("pointerdown", function (e) {
+
+        if (e.pointerType === "mouse" && e.button !== 0) {
+            return;
+        }
+
+        isPointerDown = true;
+        moved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        if (e.pointerType === "mouse") {
+            viewer.classList.add("is-dragging");
+        }
+
+    });
+
+    viewer.addEventListener("pointermove", function (e) {
+
+        if (!isPointerDown) {
+            return;
+        }
+
+        if (
+            Math.abs(e.clientX - startX) > 10 ||
+            Math.abs(e.clientY - startY) > 10
+        ) {
+            moved = true;
+        }
+
+    });
+
+    viewer.addEventListener("pointerup", function (e) {
+
+        if (!isPointerDown) {
+            return;
+        }
+
+        isPointerDown = false;
+        viewer.classList.remove("is-dragging");
+
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        if (
+            moved &&
+            Math.abs(deltaX) >= 50 &&
+            Math.abs(deltaX) > Math.abs(deltaY)
+        ) {
+            changeImageBySwipe(deltaX);
+        }
+
+    });
+
+    viewer.addEventListener("pointercancel", function () {
+
+        isPointerDown = false;
+        viewer.classList.remove("is-dragging");
+
+    });
+
+})();
 
 /*================================
  تحميل أسعار التوصيل
