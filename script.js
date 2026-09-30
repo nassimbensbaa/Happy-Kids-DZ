@@ -159,9 +159,12 @@ async function loadProducts() {
 
                 html += `
                     <button
-                        class="category-btn"
-                        onclick="selectProduct(${index},this)">
-                        ${p.name}
+                        class="category-btn image-thumb"
+                        onclick="selectProduct(${index},this)"
+                        aria-label="عرض ${p.name}"
+                        title="${p.name}">
+                        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+                        <span>${p.name}</span>
                     </button>
                 `;
 
@@ -275,6 +278,15 @@ async function selectProduct(index, btn) {
 
             };
 
+    }
+
+    document.querySelectorAll(".category-btn").forEach(function (item) {
+        item.classList.remove("active");
+    });
+
+    if (btn) {
+        btn.classList.add("active");
+        btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
 
 
@@ -1116,3 +1128,31 @@ window.onload =
         );
 
     };
+
+/* سحب شريط الصور بالماوس على الكمبيوتر */
+(function () {
+    const gallery = document.getElementById("categories");
+    if (!gallery) return;
+
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    gallery.addEventListener("mousedown", function (e) {
+        isDown = true;
+        startX = e.pageX;
+        startScroll = gallery.scrollLeft;
+        gallery.classList.add("dragging");
+    });
+
+    window.addEventListener("mouseup", function () {
+        isDown = false;
+        gallery.classList.remove("dragging");
+    });
+
+    gallery.addEventListener("mousemove", function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        gallery.scrollLeft = startScroll - (e.pageX - startX) * 1.15;
+    });
+})();
