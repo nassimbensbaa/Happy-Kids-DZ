@@ -2,7 +2,6 @@ let products = [];
 let deliveryData = [];
 let PRODUCT_PRICE = 0;
 let selectedProduct = null;
-let currentProductIndex = 0;
 
 
 /*=================================
@@ -171,7 +170,7 @@ async function loadProducts() {
             html += `
                 <button
                     class="category-btn image-thumb"
-                    onclick="selectProduct(${index}, this)"
+                    data-index="${index}"
                     aria-label="عرض ${p.name}"
                     title="${p.name}">
 
@@ -230,48 +229,113 @@ async function loadProducts() {
  اختيار منتج
 ================================*/
 
+let currentImageIndex = 0;
+
+function getImagePath(product) {
+    const imagePath = String(product?.image || "").replace(/^\/+/, "");
+    return imagePath.startsWith("images/") ? imagePath : "images/" + imagePath;
+}
+
+function updateMainImage(index) {
+    const img = document.getElementById("mainImage");
+    if (!img || !products[index]) return;
+
+    currentImageIndex = index;
+    img.style.opacity = "0.35";
+    img.src = getImagePath(products[index]);
+    img.alt = products[index].name || "صورة الكتاب";
+
+    img.onload = function () {
+        img.style.opacity = "1";
+    };
+
+    img.onerror = function () {
+        console.error("تعذر تحميل الصورة:", img.src);
+        img.style.opacity = "1";
+    };
+}
+
+function changeImage(step) {
+    if (!products.length) return;
+
+    let nextIndex = currentImageIndex + step;
+    if (nextIndex < 0) nextIndex = products.length - 1;
+    if (nextIndex >= products.length) nextIndex = 0;
+
+    const btn = document.querySelector(`.category-btn[data-index="${nextIndex}"]`);
+    selectProduct(nextIndex, btn);
+}
+
+function setupImageViewer() {
+    const viewer = document.getElementById("imageViewer");
+    const img = document.getElementById("mainImage");
+    const prev = document.getElementById("prevImage");
+    const next = document.getElementById("nextImage");
+    const hint = document.getElementById("swipeHint");
+    const categories = document.getElementById("categories");
+
+    if (!viewer || !img) return;
+
+    prev?.addEventListener("click", () => changeImage(-1));
+    next?.addEventListener("click", () => changeImage(1));
+
+    // الضغط على أي صورة مصغرة يغيّر الصورة الكبيرة مباشرة
+    categories?.addEventListener("click", function (e) {
+        const button = e.target.closest(".image-thumb");
+        if (!button) return;
+        const index = Number(button.dataset.index);
+        if (Number.isInteger(index)) selectProduct(index, button);
+    });
+
+    let startX = 0;
+    let startY = 0;
+    let dragging = false;
+
+    const finishSwipe = (clientX, clientY) => {
+        if (!dragging) return;
+        dragging = false;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+            changeImage(dx < 0 ? 1 : -1);
+        }
+    };
+
+    viewer.addEventListener("pointerdown", function (e) {
+        if (e.target.closest("button")) return;
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        viewer.setPointerCapture?.(e.pointerId);
+    });
+
+    viewer.addEventListener("pointerup", function (e) {
+        finishSwipe(e.clientX, e.clientY);
+    });
+
+    viewer.addEventListener("pointercancel", function () {
+        dragging = false;
+    });
+
+    // إخفاء التلميح بعد أول استعمال، مع بقائه ظاهرًا عند فتح الصفحة
+    viewer.addEventListener("click", function () {
+        hint?.classList.add("used");
+    });
+}
+
 async function selectProduct(index, btn) {
 
-    if (!Array.isArray(products) || !products[index]) {
-        return;
-    }
+    selectedProduct = products[index];
 
-    currentProductIndex = index;
+    if (!selectedProduct) return;
 
-    selectedProduct =
-        products[index];
+    // حفظ رقم الصورة الحالية لاستخدام أزرار التنقل والسحب
+    currentImageIndex = index;
 
+    PRODUCT_PRICE = Number(selectedProduct.price || 0);
 
-    PRODUCT_PRICE =
-        Number(
-            selectedProduct.price || 0
-        );
-
-
-    //--------------------------------
-    // تغيير الصورة فوراً
-    //--------------------------------
-
-    const img = document.getElementById("mainImage");
-
-    if (img) {
-        const imagePath = String(selectedProduct.image || "").replace(/^\/+/, "");
-        img.style.opacity = "0.35";
-        img.src = imagePath.startsWith("images/") ? imagePath : "images/" + imagePath;
-
-        img.onload = function () {
-            img.style.opacity = "1";
-        };
-
-        img.onerror = function () {
-            console.error("تعذر تحميل الصورة:", img.src);
-            img.style.opacity = "1";
-        };
-    }
-
-    //--------------------------------
-    // إرسال ViewContent بعد تحديث الصورة
-    //--------------------------------
+    updateMainImage(index);
 
     try {
         await trackEvent(
@@ -290,11 +354,11 @@ async function selectProduct(index, btn) {
         item.classList.remove("active");
     });
 
-    if (btn) {
-        btn.classList.add("active");
-        btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const activeButton = btn || document.querySelector(`.category-btn[data-index="${index}"]`);
+    if (activeButton) {
+        activeButton.classList.add("active");
+        activeButton.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }
-
 
     //--------------------------------
     // تحديث الأسعار
@@ -360,148 +424,6 @@ async function selectProduct(index, btn) {
 
 }
 
-
-
-/*================================
- التنقل بالسحب بين الصور
-================================*/
-
-(function setupImageSwipe() {
-
-    const viewer = document.querySelector(".viewer");
-
-    if (!viewer) {
-        return;
-    }
-
-    let startX = 0;
-    let startY = 0;
-    let isPointerDown = false;
-    let moved = false;
-
-    function changeImageBySwipe(deltaX) {
-
-        if (!Array.isArray(products) || products.length < 2) {
-            return;
-        }
-
-        // سحب لليسار = الصورة التالية
-        // سحب لليمين = الصورة السابقة
-        const direction = deltaX < 0 ? 1 : -1;
-
-        let nextIndex =
-            currentProductIndex + direction;
-
-        if (nextIndex < 0) {
-            nextIndex = products.length - 1;
-        }
-
-        if (nextIndex >= products.length) {
-            nextIndex = 0;
-        }
-
-        const button =
-            document.querySelectorAll(".category-btn")[nextIndex];
-
-        selectProduct(nextIndex, button);
-    }
-
-    // الهاتف واللمس
-    viewer.addEventListener("touchstart", function (e) {
-
-        if (!e.touches || !e.touches.length) {
-            return;
-        }
-
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-
-    }, { passive: true });
-
-    viewer.addEventListener("touchend", function (e) {
-
-        if (!e.changedTouches || !e.changedTouches.length) {
-            return;
-        }
-
-        const endX = e.changedTouches[0].clientX;
-        const endY = e.changedTouches[0].clientY;
-
-        const deltaX = endX - startX;
-        const deltaY = endY - startY;
-
-        // تجاهل السحب العمودي أو اللمسات القصيرة
-        if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY)) {
-            return;
-        }
-
-        changeImageBySwipe(deltaX);
-
-    }, { passive: true });
-
-    // الكمبيوتر: السحب بالماوس
-    viewer.addEventListener("pointerdown", function (e) {
-
-        if (e.pointerType === "mouse" && e.button !== 0) {
-            return;
-        }
-
-        isPointerDown = true;
-        moved = false;
-        startX = e.clientX;
-        startY = e.clientY;
-
-        if (e.pointerType === "mouse") {
-            viewer.classList.add("is-dragging");
-        }
-
-    });
-
-    viewer.addEventListener("pointermove", function (e) {
-
-        if (!isPointerDown) {
-            return;
-        }
-
-        if (
-            Math.abs(e.clientX - startX) > 10 ||
-            Math.abs(e.clientY - startY) > 10
-        ) {
-            moved = true;
-        }
-
-    });
-
-    viewer.addEventListener("pointerup", function (e) {
-
-        if (!isPointerDown) {
-            return;
-        }
-
-        isPointerDown = false;
-        viewer.classList.remove("is-dragging");
-
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-
-        if (
-            moved &&
-            Math.abs(deltaX) >= 50 &&
-            Math.abs(deltaX) > Math.abs(deltaY)
-        ) {
-            changeImageBySwipe(deltaX);
-        }
-
-    });
-
-    viewer.addEventListener("pointercancel", function () {
-
-        isPointerDown = false;
-        viewer.classList.remove("is-dragging");
-
-    });
-
-})();
 
 /*================================
  تحميل أسعار التوصيل
@@ -1252,6 +1174,8 @@ window.onload =
         // تحميل البيانات
         //--------------------------------
 
+        setupImageViewer();
+
         await loadDelivery();
 
         await loadProducts();
@@ -1277,30 +1201,3 @@ window.onload =
 
     };
 
-/* سحب شريط الصور بالماوس على الكمبيوتر */
-(function () {
-    const gallery = document.getElementById("categories");
-    if (!gallery) return;
-
-    let isDown = false;
-    let startX = 0;
-    let startScroll = 0;
-
-    gallery.addEventListener("mousedown", function (e) {
-        isDown = true;
-        startX = e.pageX;
-        startScroll = gallery.scrollLeft;
-        gallery.classList.add("dragging");
-    });
-
-    window.addEventListener("mouseup", function () {
-        isDown = false;
-        gallery.classList.remove("dragging");
-    });
-
-    gallery.addEventListener("mousemove", function (e) {
-        if (!isDown) return;
-        e.preventDefault();
-        gallery.scrollLeft = startScroll - (e.pageX - startX) * 1.15;
-    });
-})();
