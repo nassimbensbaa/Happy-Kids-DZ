@@ -53,5 +53,10 @@
     "name": "11",
     "image": "11.png",
     "price": 1450
+  },
+    {
+    "name": "12",
+    "image": "image 100.png",
+    "price": 1450
   }
 ]
