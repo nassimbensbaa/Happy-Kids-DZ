@@ -59,4 +59,22 @@
     "image": "image 100.webp",
     "price": 1450
   }
+   },
+    {
+    "name": "13",
+    "image": "image 101.webp",
+    "price": 1450
+  }
+   },
+    {
+    "name": "13",
+    "image": "image 102.webp",
+    "price": 1450
+  }
+   },
+    {
+    "name": "14",
+    "image": "image 103.webp",
+    "price": 1450
+  }
 ]
